@@ -59,9 +59,7 @@ The configuration file should be a JSON file with the following structure:
   "userAgent": "Hopper-URL-Downloader/1.0",
   "retryAttempts": 3,
   "connectTimeout": 10,
-  "readTimeout": 30,
-  "followRedirects": true,
-  "validateSSL": true
+  "readTimeout": 30
 }
 ```
 
@@ -77,8 +75,6 @@ The configuration file should be a JSON file with the following structure:
 | `retryAttempts` | Integer | No | 3 | Number of retry attempts for failed downloads |
 | `connectTimeout` | Integer | No | 30 | Connection timeout in seconds |
 | `readTimeout` | Integer | No | 60 | Read timeout in seconds |
-| `followRedirects` | Boolean | No | true | Whether to follow HTTP redirects |
-| `validateSSL` | Boolean | No | true | Whether to validate SSL certificates |
 
 ## Example Usage
 
