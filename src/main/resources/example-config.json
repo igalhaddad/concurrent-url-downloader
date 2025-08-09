@@ -1,0 +1,18 @@
+{
+  "urls": [
+    "https://httpbin.org/delay/1",
+    "https://httpbin.org/json",
+    "https://httpbin.org/uuid",
+    "https://httpbin.org/base64/SG9wcGVyIFVSTCBEb3dubG9hZGVy",
+    "https://jsonplaceholder.typicode.com/posts/1",
+    "https://jsonplaceholder.typicode.com/users/1",
+    "https://httpbin.org/status/200"
+  ],
+  "maxDownloadTimePerUrl": 300,
+  "outputDirectory": "./downloads",
+  "maxConcurrentDownloads": 3,
+  "userAgent": "Hopper-URL-Downloader/1.0",
+  "retryAttempts": 3,
+  "connectTimeout": 30,
+  "readTimeout": 60
+}
