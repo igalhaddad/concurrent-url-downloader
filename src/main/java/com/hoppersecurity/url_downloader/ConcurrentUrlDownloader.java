@@ -108,8 +108,7 @@ public class ConcurrentUrlDownloader {
             createOutputDirectory();
             
             // Start completion logging thread
-            Thread loggingThread = new Thread(this::logCompletionsInOrder);
-            loggingThread.setDaemon(true);
+            Thread loggingThread = new Thread(this::logCompletionsInOrder, "DownloadLogger");
             loggingThread.start();
             
             // Submit all download tasks

@@ -84,10 +84,10 @@ public class DownloadCommand {
             ConcurrentUrlDownloader downloader = new ConcurrentUrlDownloader(config);
 
             // Execute downloads
+            Instant startTime = Instant.now();
             List<DownloadResult> results = downloader.downloadAll();
-
             Instant endTime = Instant.now();
-            Duration totalDuration = Duration.between(Instant.now(), endTime);
+            Duration totalDuration = Duration.between(startTime, endTime);
 
             // Generate summary
             long successfulDownloads = results.stream().filter(DownloadResult::isSuccess).count();
