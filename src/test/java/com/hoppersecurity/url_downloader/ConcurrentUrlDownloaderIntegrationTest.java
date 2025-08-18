@@ -50,8 +50,8 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(3, results.size());
-        assertEquals(3, results.stream().filter(DownloadResult::isSuccess).count());
-        assertEquals(0, results.stream().filter(r -> !r.isSuccess()).count());
+        assertEquals(3, results.stream().filter(DownloadResult::success).count());
+        assertEquals(0, results.stream().filter(r -> !r.success()).count());
         
         // Verify files were created
         assertTrue(Files.exists(tempDir.resolve("downloads")));
@@ -74,16 +74,16 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(4, results.size());
-        assertEquals(2, results.stream().filter(DownloadResult::isSuccess).count());
-        assertEquals(2, results.stream().filter(r -> !r.isSuccess()).count());
+        assertEquals(2, results.stream().filter(DownloadResult::success).count());
+        assertEquals(2, results.stream().filter(r -> !r.success()).count());
         
         // Verify specific failures
         List<DownloadResult> failures = results.stream()
-            .filter(r -> !r.isSuccess())
+            .filter(r -> !r.success())
             .toList();
         
-        assertTrue(failures.stream().anyMatch(r -> r.getUrl().contains("/notfound")));
-        assertTrue(failures.stream().anyMatch(r -> r.getUrl().contains("/error")));
+        assertTrue(failures.stream().anyMatch(r -> r.url().contains("/notfound")));
+        assertTrue(failures.stream().anyMatch(r -> r.url().contains("/error")));
         
         // Verify request count
         assertEquals(4, testServer.getRequestCount());
@@ -108,7 +108,7 @@ class ConcurrentUrlDownloaderIntegrationTest {
         Duration totalTime = Duration.between(startTime, endTime);
         
         assertEquals(5, results.size());
-        assertEquals(5, results.stream().filter(DownloadResult::isSuccess).count());
+        assertEquals(5, results.stream().filter(DownloadResult::success).count());
         
         // Verify concurrency: total time should be less than sum of individual times
         // The slow endpoint takes 2 seconds, so total time should be around 2-3 seconds
@@ -132,20 +132,20 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(2, results.size());
-        assertEquals(1, results.stream().filter(DownloadResult::isSuccess).count());
-        assertEquals(1, results.stream().filter(r -> !r.isSuccess()).count());
+        assertEquals(1, results.stream().filter(DownloadResult::success).count());
+        assertEquals(1, results.stream().filter(r -> !r.success()).count());
         
         // Verify timeout failure
         DownloadResult timeoutResult = results.stream()
-            .filter(r -> !r.isSuccess())
+            .filter(r -> !r.success())
             .findFirst()
             .orElse(null);
         
         assertNotNull(timeoutResult);
-        assertTrue(timeoutResult.getUrl().contains("/timeout"));
-        assertTrue(timeoutResult.getErrorMessage().contains("timeout") || 
-                  timeoutResult.getErrorMessage().contains("Timeout") ||
-                  timeoutResult.getErrorMessage().contains("Read timed out"));
+        assertTrue(timeoutResult.url().contains("/timeout"));
+        assertTrue(timeoutResult.errorMessage().contains("timeout") ||
+                  timeoutResult.errorMessage().contains("Timeout") ||
+                  timeoutResult.errorMessage().contains("Read timed out"));
         
         // Verify request count
         assertEquals(2, testServer.getRequestCount());
@@ -164,8 +164,8 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(2, results.size());
-        assertEquals(1, results.stream().filter(DownloadResult::isSuccess).count());
-        assertEquals(1, results.stream().filter(r -> !r.isSuccess()).count());
+        assertEquals(1, results.stream().filter(DownloadResult::success).count());
+        assertEquals(1, results.stream().filter(r -> !r.success()).count());
         
         // Verify retry attempts (should be 1 + 2 retries = 3 total requests for the error endpoint)
         // Plus 1 for the success endpoint = 4 total
@@ -184,8 +184,8 @@ class ConcurrentUrlDownloaderIntegrationTest {
         assertEquals(1, results.size());
         DownloadResult result = results.getFirst();
         
-        assertTrue(result.isSuccess());
-        assertEquals(1024 * 1024, result.getFileSize()); // 1MB
+        assertTrue(result.success());
+        assertEquals(1024 * 1024, result.fileSize()); // 1MB
         
         // Verify file was created with correct size
         Path downloadDir = tempDir.resolve("downloads");
@@ -219,8 +219,8 @@ class ConcurrentUrlDownloaderIntegrationTest {
         assertEquals(1, results.size());
         DownloadResult result = results.getFirst();
         
-        assertTrue(result.isSuccess());
-        assertEquals(1024, result.getFileSize()); // 1KB
+        assertTrue(result.success());
+        assertEquals(1024, result.fileSize()); // 1KB
         
         // Verify binary file was created
         Path downloadDir = tempDir.resolve("downloads");
@@ -254,18 +254,18 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(3, results.size());
-        assertEquals(3, results.stream().filter(DownloadResult::isSuccess).count());
+        assertEquals(3, results.stream().filter(DownloadResult::success).count());
         
         // Verify that fast downloads completed before slow ones
         // The results should be ordered by completion time, not start time
         List<DownloadResult> orderedResults = results.stream()
-            .sorted((r1, r2) -> r1.getEndTime().compareTo(r2.getEndTime()))
+            .sorted((r1, r2) -> r1.endTime().compareTo(r2.endTime()))
             .toList();
         
         // Fast downloads should complete before slow ones
-        assertTrue(orderedResults.get(0).getDuration().toMillis() < 1000);
-        assertTrue(orderedResults.get(1).getDuration().toMillis() < 1000);
-        assertTrue(orderedResults.get(2).getDuration().toMillis() >= 2000);
+        assertTrue(orderedResults.get(0).duration().toMillis() < 1000);
+        assertTrue(orderedResults.get(1).duration().toMillis() < 1000);
+        assertTrue(orderedResults.get(2).duration().toMillis() >= 2000);
     }
 
     @Test
@@ -290,17 +290,17 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(2, results.size());
-        assertEquals(1, results.stream().filter(DownloadResult::isSuccess).count());
-        assertEquals(1, results.stream().filter(r -> !r.isSuccess()).count());
+        assertEquals(1, results.stream().filter(DownloadResult::success).count());
+        assertEquals(1, results.stream().filter(r -> !r.success()).count());
         
         // Verify the invalid URL failed
         DownloadResult failure = results.stream()
-            .filter(r -> !r.isSuccess())
+            .filter(r -> !r.success())
             .findFirst()
             .orElse(null);
         
         assertNotNull(failure);
-        assertTrue(failure.getUrl().contains("invalid-domain"));
+        assertTrue(failure.url().contains("invalid-domain"));
         
         // Verify request count (only the valid URL should have been requested)
         assertEquals(1, testServer.getRequestCount());
@@ -326,7 +326,7 @@ class ConcurrentUrlDownloaderIntegrationTest {
         Duration totalTime = Duration.between(startTime, endTime);
         
         assertEquals(5, results.size());
-        assertEquals(5, results.stream().filter(DownloadResult::isSuccess).count());
+        assertEquals(5, results.stream().filter(DownloadResult::success).count());
         
         // With 2 concurrent downloads and 5 URLs taking 2 seconds each,
         // total time should be around 6 seconds (3 batches of 2 seconds each)
@@ -348,7 +348,7 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(1, results.size());
-        assertTrue(results.getFirst().isSuccess());
+        assertTrue(results.getFirst().success());
         
         // Verify request was made (user agent verification would require server-side logging)
         assertEquals(1, testServer.getRequestCount());
@@ -371,7 +371,7 @@ class ConcurrentUrlDownloaderIntegrationTest {
         Duration totalTime = Duration.between(startTime, endTime);
         
         assertEquals(1, results.size());
-        assertFalse(results.getFirst().isSuccess());
+        assertFalse(results.getFirst().success());
         
         // Should timeout quickly (within 2-3 seconds including retry delays)
         assertTrue(totalTime.toMillis() < 5000, 
@@ -390,12 +390,12 @@ class ConcurrentUrlDownloaderIntegrationTest {
         List<DownloadResult> results = downloader.downloadAll();
         
         assertEquals(3, results.size());
-        assertEquals(3, results.stream().filter(DownloadResult::isSuccess).count());
+        assertEquals(3, results.stream().filter(DownloadResult::success).count());
         
         // Verify all results have non-null filenames
         results.forEach(result -> {
-            assertNotNull(result.getFilename());
-            assertFalse(result.getFilename().isEmpty());
+            assertNotNull(result.filename());
+            assertFalse(result.filename().isEmpty());
         });
         
         // Verify files were created with generated names
@@ -445,13 +445,13 @@ class ConcurrentUrlDownloaderIntegrationTest {
         
         // Verify all results have valid filenames
         results.forEach(result -> {
-            if (result.isSuccess()) {
-                assertNotNull(result.getFilename());
-                assertFalse(result.getFilename().isEmpty());
+            if (result.success()) {
+                assertNotNull(result.filename());
+                assertFalse(result.filename().isEmpty());
                 // Filename should contain timestamp and be filesystem-safe
-                assertTrue(result.getFilename().matches("\\d+_.*"));
+                assertTrue(result.filename().matches("\\d+_.*"));
                 // Should not contain unsafe characters
-                assertFalse(result.getFilename().matches(".*[!@#$%^&*()].*"));
+                assertFalse(result.filename().matches(".*[!@#$%^&*()].*"));
             }
         });
         
@@ -526,8 +526,8 @@ class ConcurrentUrlDownloaderIntegrationTest {
         DownloadResult result = results.getFirst();
         
         // Should succeed even with zero bytes
-        assertTrue(result.isSuccess());
-        assertEquals(0, result.getFileSize());
+        assertTrue(result.success());
+        assertEquals(0, result.fileSize());
         
         // Verify file was created
         Path downloadDir = tempDir.resolve("downloads");

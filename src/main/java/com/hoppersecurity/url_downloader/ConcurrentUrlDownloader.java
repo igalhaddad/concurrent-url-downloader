@@ -175,7 +175,7 @@ public class ConcurrentUrlDownloader {
                 allResults.add(result);
             }
             
-            if (result.isSuccess()) {
+            if (result.success()) {
                 completedCount.incrementAndGet();
             } else {
                 failedCount.incrementAndGet();
@@ -263,12 +263,12 @@ public class ConcurrentUrlDownloader {
                 DownloadResult result = completionQueue.poll(100, TimeUnit.MILLISECONDS);
                 if (result != null) {
                     // Log completion as it happens for real-time feedback
-                    if (result.isSuccess()) {
+                    if (result.success()) {
                         System.out.println(String.format("✓ Downloaded %s to %s (%d bytes) in %dms",
-                            result.getUrl(), result.getFilename(), result.getFileSize(), result.getDuration().toMillis()));
+                            result.url(), result.filename(), result.fileSize(), result.duration().toMillis()));
                     } else {
                         System.out.println(String.format("✗ Failed to download %s: %s (took %dms)",
-                            result.getUrl(), result.getErrorMessage(), result.getDuration().toMillis()));
+                            result.url(), result.errorMessage(), result.duration().toMillis()));
                     }
                 }
             }

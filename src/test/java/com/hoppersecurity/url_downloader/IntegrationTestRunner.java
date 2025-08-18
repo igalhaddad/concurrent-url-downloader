@@ -80,8 +80,8 @@ public class IntegrationTestRunner {
         List<DownloadResult> results = downloader.downloadAll();
 
         logger.info("Results: {} successful, {} failed", 
-            results.stream().filter(DownloadResult::isSuccess).count(),
-            results.stream().filter(r -> !r.isSuccess()).count());
+            results.stream().filter(DownloadResult::success).count(),
+            results.stream().filter(r -> !r.success()).count());
 
         for (DownloadResult result : results) {
             logger.info("  {}", result);
@@ -100,8 +100,8 @@ public class IntegrationTestRunner {
         List<DownloadResult> results = downloader.downloadAll();
 
         logger.info("Results: {} successful, {} failed", 
-            results.stream().filter(DownloadResult::isSuccess).count(),
-            results.stream().filter(r -> !r.isSuccess()).count());
+            results.stream().filter(DownloadResult::success).count(),
+            results.stream().filter(r -> !r.success()).count());
 
         for (DownloadResult result : results) {
             logger.info("  {}", result);
@@ -125,8 +125,8 @@ public class IntegrationTestRunner {
 
         logger.info("Concurrent download completed in {}ms", endTime - startTime);
         logger.info("Results: {} successful, {} failed", 
-            results.stream().filter(DownloadResult::isSuccess).count(),
-            results.stream().filter(r -> !r.isSuccess()).count());
+            results.stream().filter(DownloadResult::success).count(),
+            results.stream().filter(r -> !r.success()).count());
     }
 
     private static void testTimeoutHandling(String baseUrl, Path tempDir) throws IOException {
@@ -140,8 +140,8 @@ public class IntegrationTestRunner {
         List<DownloadResult> results = downloader.downloadAll();
 
         logger.info("Results: {} successful, {} failed", 
-            results.stream().filter(DownloadResult::isSuccess).count(),
-            results.stream().filter(r -> !r.isSuccess()).count());
+            results.stream().filter(DownloadResult::success).count(),
+            results.stream().filter(r -> !r.success()).count());
 
         for (DownloadResult result : results) {
             logger.info("  {}", result);
@@ -159,8 +159,8 @@ public class IntegrationTestRunner {
         List<DownloadResult> results = downloader.downloadAll();
 
         logger.info("Results: {} successful, {} failed", 
-            results.stream().filter(DownloadResult::isSuccess).count(),
-            results.stream().filter(r -> !r.isSuccess()).count());
+            results.stream().filter(DownloadResult::success).count(),
+            results.stream().filter(r -> !r.success()).count());
 
         for (DownloadResult result : results) {
             logger.info("  {}", result);

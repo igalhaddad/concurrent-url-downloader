@@ -90,7 +90,7 @@ public class DownloadCommand {
             Duration totalDuration = Duration.between(startTime, endTime);
 
             // Generate summary
-            long successfulDownloads = results.stream().filter(DownloadResult::isSuccess).count();
+            long successfulDownloads = results.stream().filter(DownloadResult::success).count();
             long failedDownloads = results.size() - successfulDownloads;
 
             StringBuilder summary = new StringBuilder();
@@ -104,9 +104,9 @@ public class DownloadCommand {
             if (failedDownloads > 0) {
                 summary.append("\n=== Failed Downloads ===\n");
                 results.stream()
-                        .filter(result -> !result.isSuccess())
+                        .filter(result -> !result.success())
                         .forEach(result -> summary.append(String.format("- %s: %s\n",
-                                result.getUrl(), result.getErrorMessage())));
+                                result.url(), result.errorMessage())));
             }
 
             logger.info("Download process completed successfully");

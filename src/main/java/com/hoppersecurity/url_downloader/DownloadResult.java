@@ -48,28 +48,23 @@ import java.time.Instant;
  * @version 1.0
  * @since 1.0
  */
-public class DownloadResult {
-    private final String url;
-    private final String filename;
-    private final boolean success;
-    private final Duration duration;
-    private final String errorMessage;
-    private final long fileSize;
-    private final Instant startTime;
-    private final Instant endTime;
-
-    public DownloadResult(String url, String filename, boolean success,
-                          Instant startTime, Instant endTime, String errorMessage, long fileSize) {
-        this.url = url;
-        this.filename = filename;
-        this.success = success;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.duration = Duration.between(startTime, endTime);
-        this.errorMessage = errorMessage;
-        this.fileSize = fileSize;
+public record DownloadResult(
+        String url,
+        String filename,
+        boolean success,
+        Instant startTime,
+        Instant endTime,
+        String errorMessage,
+        long fileSize
+) {
+    // Compact constructor for basic validation
+    public DownloadResult {
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException("startTime and endTime must not be null");
+        }
     }
 
+    // Factory methods to mirror previous API
     public static DownloadResult success(String url, String filename,
                                          Instant startTime, Instant endTime, long fileSize) {
         return new DownloadResult(url, filename, true, startTime, endTime, null, fileSize);
@@ -80,46 +75,18 @@ public class DownloadResult {
         return new DownloadResult(url, null, false, startTime, endTime, errorMessage, 0);
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public Instant getStartTime() {
-        return startTime;
-    }
-
-    public Instant getEndTime() {
-        return endTime;
+    public Duration duration() {
+        return Duration.between(startTime, endTime);
     }
 
     @Override
     public String toString() {
         if (success) {
             return String.format("✓ Downloaded %s to %s (%d bytes) in %dms",
-                    url, filename, fileSize, duration.toMillis());
+                    url, filename, fileSize, duration().toMillis());
         } else {
             return String.format("✗ Failed to download %s: %s (took %dms)",
-                    url, errorMessage, duration.toMillis());
+                    url, errorMessage, duration().toMillis());
         }
     }
 }

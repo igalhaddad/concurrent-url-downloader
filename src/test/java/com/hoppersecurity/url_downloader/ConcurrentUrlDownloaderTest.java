@@ -40,14 +40,14 @@ class ConcurrentUrlDownloaderTest {
             1024L
         );
         
-        assertTrue(success.isSuccess());
-        assertEquals("https://example.com/test.txt", success.getUrl());
-        assertEquals("test.txt", success.getFilename());
-        assertEquals(1024L, success.getFileSize());
-        assertNull(success.getErrorMessage());
-        assertEquals(start, success.getStartTime());
-        assertEquals(end, success.getEndTime());
-        assertEquals(1000L, success.getDuration().toMillis());
+        assertTrue(success.success());
+        assertEquals("https://example.com/test.txt", success.url());
+        assertEquals("test.txt", success.filename());
+        assertEquals(1024L, success.fileSize());
+        assertNull(success.errorMessage());
+        assertEquals(start, success.startTime());
+        assertEquals(end, success.endTime());
+        assertEquals(1000L, success.duration().toMillis());
         
         DownloadResult failure = DownloadResult.failure(
             "https://example.com/fail.txt",
@@ -56,12 +56,12 @@ class ConcurrentUrlDownloaderTest {
             end
         );
         
-        assertFalse(failure.isSuccess());
-        assertEquals("https://example.com/fail.txt", failure.getUrl());
-        assertEquals("Connection timeout", failure.getErrorMessage());
-        assertEquals(0L, failure.getFileSize());
-        assertNull(failure.getFilename());
-        assertEquals(1000L, failure.getDuration().toMillis());
+        assertFalse(failure.success());
+        assertEquals("https://example.com/fail.txt", failure.url());
+        assertEquals("Connection timeout", failure.errorMessage());
+        assertEquals(0L, failure.fileSize());
+        assertNull(failure.filename());
+        assertEquals(1000L, failure.duration().toMillis());
     }
 
     @Test
@@ -171,7 +171,7 @@ class ConcurrentUrlDownloaderTest {
             1024L
         );
         
-        assertEquals(1500L, result.getDuration().toMillis());
-        assertEquals(1L, result.getDuration().getSeconds());
+        assertEquals(1500L, result.duration().toMillis());
+        assertEquals(1L, result.duration().getSeconds());
     }
 }
