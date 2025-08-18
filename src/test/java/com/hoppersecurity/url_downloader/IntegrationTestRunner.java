@@ -69,7 +69,7 @@ public class IntegrationTestRunner {
         }
     }
 
-    private static void testSuccessfulDownloads(String baseUrl, Path tempDir) throws IOException {
+    private static void testSuccessfulDownloads(String baseUrl, Path tempDir) {
         DownloadConfig config = createTestConfig(Arrays.asList(
             baseUrl + "/success",
             baseUrl + "/file.txt",
@@ -88,7 +88,7 @@ public class IntegrationTestRunner {
         }
     }
 
-    private static void testMixedResults(String baseUrl, Path tempDir) throws IOException {
+    private static void testMixedResults(String baseUrl, Path tempDir) {
         DownloadConfig config = createTestConfig(Arrays.asList(
             baseUrl + "/success",
             baseUrl + "/notfound",
@@ -108,7 +108,7 @@ public class IntegrationTestRunner {
         }
     }
 
-    private static void testConcurrentDownloads(String baseUrl, Path tempDir) throws IOException {
+    private static void testConcurrentDownloads(String baseUrl, Path tempDir) {
         DownloadConfig config = createTestConfig(Arrays.asList(
             baseUrl + "/slow",
             baseUrl + "/success",
@@ -129,7 +129,7 @@ public class IntegrationTestRunner {
             results.stream().filter(r -> !r.success()).count());
     }
 
-    private static void testTimeoutHandling(String baseUrl, Path tempDir) throws IOException {
+    private static void testTimeoutHandling(String baseUrl, Path tempDir) {
         DownloadConfig config = createTestConfig(Arrays.asList(
             baseUrl + "/timeout",
             baseUrl + "/success"
@@ -148,7 +148,7 @@ public class IntegrationTestRunner {
         }
     }
 
-    private static void testRetryLogic(String baseUrl, Path tempDir) throws IOException {
+    private static void testRetryLogic(String baseUrl, Path tempDir) {
         DownloadConfig config = createTestConfig(Arrays.asList(
             baseUrl + "/error", // This will fail but should be retried
             baseUrl + "/success"

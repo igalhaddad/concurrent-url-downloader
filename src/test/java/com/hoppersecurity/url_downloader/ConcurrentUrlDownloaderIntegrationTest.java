@@ -24,7 +24,7 @@ class ConcurrentUrlDownloaderIntegrationTest {
     Path tempDir;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         testServer = new IntegrationTestServer();
         testServer.start();
         baseUrl = testServer.getBaseUrl();

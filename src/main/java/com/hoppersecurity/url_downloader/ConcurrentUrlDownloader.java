@@ -272,7 +272,7 @@ public class ConcurrentUrlDownloader {
                     }
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }
     }
@@ -282,17 +282,16 @@ public class ConcurrentUrlDownloader {
             URL urlObj = new URI(url).toURL();
             String path = urlObj.getPath();
             String filename = path.substring(path.lastIndexOf('/') + 1);
-            
             if (filename.isEmpty() || filename.equals("/")) {
                 filename = "index.html";
             }
-            
             // Ensure filename is safe
             filename = filename.replaceAll("[^a-zA-Z0-9._-]", "_");
-            
             // Add timestamp to avoid conflicts
             return System.currentTimeMillis() + "_" + filename;
         } catch (Exception e) {
+            // Log at debug to avoid noise; safe fallback below
+            logger.debug("Failed to derive filename from URL '{}', falling back to default name", url, e);
             return System.currentTimeMillis() + "_download";
         }
     }
